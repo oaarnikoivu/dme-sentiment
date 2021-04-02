@@ -37,16 +37,14 @@ class Preprocessor():
         self.text = self.text.split()
             
     def join_tokens(self):
-        self.text = ' '.join(self.text)
+        self.text = ' '.join(self.text).strip()
     
     def return_text(self):
         return self.text
     
     def preprocess(self):
-        #self.lowercase()
         self.remove_punct()
         self.remove_stopwords(stop_words)
-        self.stem()
         self.tokenize()
         self.join_tokens()
         return self.return_text()
