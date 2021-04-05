@@ -62,6 +62,7 @@ class DataLoader:
         df = df.dropna()
             
         if preprocess:
+            print('Preprocessing...')
             phrases = df['phrase'].values.tolist()
             phrases_cleaned = [Preprocessor(phrase).preprocess() for phrase in tqdm(phrases)]
             df['phrase_clean'] = phrases_cleaned
@@ -76,24 +77,16 @@ class DataLoader:
             return df 
         
     def dedup(self, df):
-        phrase_count = defaultdict(PhraseCount)
-        phrases_to_dedup = [] 
+        print('Deduplicating...')
         
-        for p, l in zip(df['phrase_clean'], df['label']):
-            phrase_count[p].label = l
-            phrase_count[p].count += 1
-            
-        for k, v in json.loads(Encoder().encode(phrase_count)).items():
-            if v['label'] == 'Neutral' and v['count'] > 1 and v['count'] < 4:
-                phrases_to_dedup.append(k)
-            if v['count'] == 2:
-                if v['label'] == 'Very negative' or v['label'] == 'Negative' or v['label'] == 'Very positive' or v['label'] == 'Positive':
-                    phrases_to_dedup.append(k)
+        temp = df
+        temp['word_count'] = temp['phrase_clean'].apply(lambda x: len(x.split()))
+        temp = temp[temp['word_count'] > 4]
         
-        temp = df[df['phrase_clean'].isin(phrases_to_dedup)]
-        temp = temp.drop_duplicates(subset=['phrase_clean'])
+        phrases = temp['phrase_clean']
+        dups = temp[phrases.isin(phrases[phrases.duplicated()])]
         
-        df = pd.concat([df, temp]).drop_duplicates(keep=False)
+        df = pd.concat([df, dups]).drop_duplicates(keep=False)
         
         return df 
         
@@ -103,5 +96,5 @@ class DataLoader:
         if remove_duplicates:
             train = self.dedup(df=train) 
         
-        return train, validate, test
+        return shuffle(train), validate, test
     

@@ -19,7 +19,7 @@ class Preprocessor():
         self.text = self.text.lower()
     
     def remove_punct(self):         
-        self.text = re.sub("[^a-zA-Z.!? ]+", '', self.text) # Remove punctuation except '!' and '." 
+        self.text = re.sub("[^a-zA-Z.!? ]+", '', self.text) # Remove punctuation except '!', '?' and '." 
         self.text = re.sub(' +', ' ', self.text)
     
     def remove_stopwords(self, stop_words):
