@@ -48,3 +48,4 @@ class Preprocessor():
         self.tokenize()
         self.join_tokens()
         return self.return_text()
+    
