@@ -15,15 +15,18 @@ def select_n_components(var_ratio, goal_var: float) -> int:
     return n_components
 
 # Find the number of adjective POS tags in text 
-adj = ['JJ', 'JJR', 'JJS']
+pos_dic = {
+    'adj' :  ['JJ','JJR','JJS'],
+    'adv' : ['RB','RBR','RBS','WRB']
+}
 
-def pos_check(x):
+def pos_check(x, flag):
     count = 0
     try:
         wiki = TextBlob(x)
         for tup in wiki.tags:
             ppo = list(tup)[1]
-            if ppo in adj:
+            if ppo in pos_dic[flag]:
                 count += 1
     except:
         pass
