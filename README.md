@@ -1,1 +1,1 @@
-# dme-sentiment
+# Phrase-level fine grained sentiment analysis 
